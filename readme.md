@@ -6,7 +6,7 @@
 
 **Training Deep SR Network**  ***√*** 
 
-**Transferring to LUT**   ***×***
+**Transferring to LUT**   ***√***
 
 **Testing Using SR-LUT**  ***×***
 
