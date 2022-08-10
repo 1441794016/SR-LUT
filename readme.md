@@ -8,7 +8,7 @@
 
 **Transferring to LUT**   ***√***
 
-**Testing Using SR-LUT**  ***×***
+**Testing Using SR-LUT**  ***√***
 
 
 
