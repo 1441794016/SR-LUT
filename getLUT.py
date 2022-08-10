@@ -13,6 +13,7 @@ inputs = torch.zeros(1, 1, 2, 2)
 
 test_model = SRNet(scale)
 test_model = test_model.to(device)
+test_model.load_state_dict(torch.load('best.pth'))
 test_model.eval()
 with torch.no_grad():
     for i in sample_pixel:
@@ -24,10 +25,10 @@ with torch.no_grad():
                                             [f, k]]]])
                     # inputs:(1, 1, 2, 2), 代表2x2的感受野
                     inputs = inputs.to(device)
-                    LUT[sample_pixel.index(i), sample_pixel.index(j), sample_pixel.index(f), sample_pixel.index(k)] = test_model(inputs).squeeze().cpu().numpy()
+                    sr_patch = compute_sr(test_model, inputs)[:, :, 0:4, 0:4]  # 得到大小为1×1×8×8的tensor的左上角1×1×4×4大小的部分
+                    LUT[sample_pixel.index(i), sample_pixel.index(j), sample_pixel.index(f), sample_pixel.index(k)] = sr_patch.squeeze().cpu().numpy() 
+                                                                                                     
 
 np.save('LUT.npy',LUT)
-
-print(LUT[0, 0, 0, 0])
 print("over!")
 

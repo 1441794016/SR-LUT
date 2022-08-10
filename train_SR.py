@@ -12,24 +12,21 @@ import math
 
 
 def compute_sr(model, lr_channel):
-    sr_channel_rot0 = model(F.pad(lr_channel, (0, 1, 0, 1), mode='reflect'))
+        sr_channel_rot0 = model(F.pad(lr_channel, (0, 1, 0, 1), mode='reflect'))
 
-    sr_channel_rot90 = model(F.pad(torch.rot90(lr_channel, 1, [2, 3]), (0, 1, 0, 1), mode='reflect'))
-    sr_channel_rot90 = torch.rot90(sr_channel_rot90, 3, [2, 3])
+        sr_channel_rot90 = model(F.pad(torch.rot90(lr_channel, 1, [2, 3]), (0, 1, 0, 1), mode='reflect'))
+        sr_channel_rot90 = torch.rot90(sr_channel_rot90, 3, [2, 3])
 
-    sr_channel_rot180 = model(F.pad(torch.rot90(lr_channel, 2, [2, 3]), (0, 1, 0, 1), mode='reflect'))
-    sr_channel_rot180 = torch.rot90(sr_channel_rot180, 2, [2, 3])
+        sr_channel_rot180 = model(F.pad(torch.rot90(lr_channel, 2, [2, 3]), (0, 1, 0, 1), mode='reflect'))
+        sr_channel_rot180 = torch.rot90(sr_channel_rot180, 2, [2, 3])
 
-    sr_channel_rot270 = model(F.pad(torch.rot90(lr_channel, 3, [2, 3]), (0, 1, 0, 1), mode='reflect'))
-    sr_channel_rot270 = torch.rot90(sr_channel_rot270, 1, [2, 3])
+        sr_channel_rot270 = model(F.pad(torch.rot90(lr_channel, 3, [2, 3]), (0, 1, 0, 1), mode='reflect'))
+        sr_channel_rot270 = torch.rot90(sr_channel_rot270, 1, [2, 3])
 
-    return (sr_channel_rot0 + sr_channel_rot90 + sr_channel_rot180 + sr_channel_rot270) / 4
-
+        return (sr_channel_rot0 + sr_channel_rot90 + sr_channel_rot180 + sr_channel_rot270) / 4.
 
 def PSNR(img1, img2):
-    temp = img1 - img2
-    temp = temp.view(-1)
-    mse = torch.mean(temp ** 2)
+    mse = np.mean((img1 - img2)**2)
     if mse == 0:
         return 100
     pixel_max = 255.0
@@ -61,12 +58,14 @@ def test(model, dataloader, device):
             for number in range(sr.shape[0]):
                 # print(sr[number].shape)
                 # print(hr[number].shape)
-                test_psnr += PSNR(sr[number], hr[number])
-                img = sr[number].mul(255).clamp(0, 255)
-                # print(sr[number])
-                img = img.detach().cpu().numpy().transpose(1, 2, 0)  # chw -> hwc
-                img = Image.fromarray(np.uint8(img)).convert('RGB')
-                img.save("test/{}_{}.png".format(item, number))
+                
+                img_sr = sr[number].mul(255).clamp(0, 255)
+                img_sr = img_sr.detach().cpu().numpy()
+                img_hr = hr[number].mul(255).detach().cpu().numpy()
+                test_psnr += PSNR(np.uint8(img_sr), np.uint8(img_hr))
+                img_sr = img_sr.transpose(1, 2, 0) # chw -> hwc
+                img_sr = Image.fromarray(np.uint8(img_sr)).convert('RGB')
+                img_sr.save("test/{}_{}.png".format(item, number))
     return test_psnr
 
 

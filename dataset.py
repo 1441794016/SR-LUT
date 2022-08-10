@@ -73,19 +73,21 @@ class TestDataset(data.Dataset):
 
 
 if __name__ == "__main__":
-    path = "DIV2K_train/DIV2K_train.h5"
+    path = "D:/deeplearningstudy/dataset/Set14_test/Set14_test.h5"
     size = 64
     scale = 4
-    batch_size = 2
+    batch_size = 1
 
-    dataset = TrainDataset(path, size, scale)
+    dataset = TestDataset(path, size, scale)
     print(len(dataset.hr))
     # 800
     print(dataset.hr[0].shape)
+    # print(dataset.hr[0])
     # (1404, 2040, 3)
     print(type(dataset.lr[0]))
     # <class 'list'>
     print(len(dataset.lr))
+    print(dataset.lr[0])
     # 1
     print(len(dataset.lr[0]))
     # 800
